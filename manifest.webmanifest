@@ -1,0 +1,12 @@
+{
+  "name": "Unity Health Hacks",
+  "short_name": "UHH",
+  "start_url": "./member-home.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#285c45",
+  "description": "Unity Health Hacks evidence-first lifestyle companion beta candidate.",
+  "id": "UHH-WEBSITE-9.3-BETA-CANDIDATE-2026-08-10",
+  "scope": "./"
+}
+
