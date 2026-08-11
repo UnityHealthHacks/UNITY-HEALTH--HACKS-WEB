@@ -1,0 +1,7 @@
+Barcode camera fallback
+
+This site bundles @zxing/browser and @zxing/library for client-side barcode
+recognition. Both packages are distributed under the Apache License 2.0.
+
+Project: https://github.com/zxing-js/browser
+License: https://www.apache.org/licenses/LICENSE-2.0
