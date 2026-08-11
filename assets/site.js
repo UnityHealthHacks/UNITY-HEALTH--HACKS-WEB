@@ -1,5 +1,15 @@
 (() => {
 'use strict';
+const isOfficial94Test=location.hostname==='unityhealthhacks.github.io'&&location.pathname.toLowerCase().includes('/unity-health-hacks-9-4-test/');
+if(isOfficial94Test){
+ const message='9.4 OFFICIAL TEST SITE — NOT LIVE. PHYSICAL MOBILE TESTING IS STILL REQUIRED.';
+ const existing=document.querySelector('.prototype-banner');
+ if(existing)existing.textContent=message;
+ else{
+  const banner=document.createElement('div');banner.className='prototype-banner';banner.textContent=message;
+  const header=document.querySelector('.site-header');header?.insertAdjacentElement('afterend',banner);
+ }
+}
 const $=id=>document.getElementById(id);
 const safeGet=(k,d='')=>{try{return localStorage.getItem(k)??d}catch{return d}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v);return true}catch{return false}};
