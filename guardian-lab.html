@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Guardian Lab | Unity Health Hacks</title>
+<meta name="description" content="A local development companion for evidence-first Unity Health Hacks guidance."/>
+<meta name="theme-color" content="#285c45"/>
+<link href="assets/styles.css" rel="stylesheet"/>
+<meta name="uhh-project-code" content="UHH-WEBSITE-9.3-CANDIDATE-2026-08-10"/>
+</head>
+<body>
+<header class="site-header"><div class="container nav"><a class="brand" href="index.html">Unity <span>Health Hacks</span></a><button aria-controls="navLinks" aria-expanded="false" aria-label="Open navigation" class="menu-btn" id="menuBtn">☰ Menu</button><nav aria-label="Primary navigation" class="nav-links" id="navLinks"><a href="index.html">Home</a><a href="start-here.html">Start Here</a><a href="program.html">Programs</a><a href="daily-portal.html">My Day</a><a href="food-checker.html">Food &amp; Ingredients</a><a href="guardian-lab.html">Guardian Lab</a><a href="membership.html">Paths &amp; Pricing</a><a href="evidence.html">Evidence</a><a href="support.html">Support</a></nav></div></header>
+<main>
+<div class="prototype-banner">9.3 DEVELOPMENT LAB — LOCAL RULE-BASED COMPANION. NOT YET CONNECTED TO A LIVE AI MODEL OR SECURE MEMBER ACCOUNT.</div>
+<section class="hero-compact"><div class="container"><p class="eyebrow">Personal companion prototype</p><h1 id="guardianGreeting">Ask. Learn. Check the evidence. You decide.</h1><p class="lead">Guardian Lab is a playable development prototype for the future Unity Health Hacks companion. It demonstrates tone, evidence labels, safety boundaries, follow-up questions, and transparent limits. It does not diagnose, prescribe, or replace medical care.</p></div></section>
+<section class="section"><div class="container grid-2">
+<div class="form-card"><h2>Ask Guardian Lab</h2><label for="guardianQuestion">What would you like to understand?</label><textarea id="guardianQuestion" rows="5" placeholder="Examples: What should I look for on this food label? What does nighttime anal itching mean? How should I think about B12 forms? What questions should I ask about fasting?"></textarea><div class="form-row" style="margin-top:12px"><label for="guardianTone">Response style</label><select id="guardianTone"><option value="balanced">Balanced</option><option value="gentle">Gentle</option><option value="direct">Direct</option></select></div><button class="primary" id="guardianAsk" type="button" style="margin-top:12px">Ask Guardian Lab</button><p class="small">Do not enter private medical records, passwords, or identifying health information. This prototype uses no cloud AI and stores nothing unless your browser itself retains page state.</p></div>
+<div class="card"><h2>What this prototype enforces</h2><ul class="clean"><li>Facts before assumptions</li><li>Personal experience is not universal proof</li><li>Known, uncertain, and missing information are separated</li><li>No diagnosis from symptoms, labels, photos, journals, or chat</li><li>No instructions to stop or change prescribed medication</li><li>No claim that an external database, clinician, lab, or product record is connected unless it actually is</li><li>Red flags are routed to appropriate evaluation</li><li>Controversial questions can be investigated without being promoted as established facts</li></ul></div>
+</div></section>
+<section class="section section-alt"><div class="container"><div class="form-card"><h2>Guardian response</h2><div id="guardianAnswer" aria-live="polite"><p class="small">Your response will appear here.</p></div></div></div></section>
+<section class="section"><div class="container grid-2"><article class="card"><h2>Product / vendor Gatekeeper</h2><p>Guardian may research products, but a product is not UHH-vetted merely because it appears in a conversation. A future recommendation must pass member-fit, evidence, product-quality, and vendor-integrity review first. Affiliate compensation cannot override a failed gate.</p></article><article class="card"><h2>Current test path</h2><p id="guardianPathContext">No member path loaded.</p><p class="small">This page reads only the browser-saved development profile. It is not a secure member record.</p></article></div></section><section class="section"><div class="container"><h2>Try a development question</h2><div class="grid-3"><button class="btn btn-secondary sample-q" type="button" data-q="I have nighttime anal itching. Does that prove I have parasites?">Nighttime itching &amp; parasites</button><button class="btn btn-secondary sample-q" type="button" data-q="Compare cyanocobalamin and methylcobalamin without marketing hype.">B12 forms</button><button class="btn btn-secondary sample-q" type="button" data-q="I want to try fasting. What should I think about first?">Fasting questions</button><button class="btn btn-secondary sample-q" type="button" data-q="My doctor prescribed a statin and I want to stop it. What should I do?">Medication decision</button><button class="btn btn-secondary sample-q" type="button" data-q="What can a barcode actually tell me about a food product?">Barcode limits</button><button class="btn btn-secondary sample-q" type="button" data-q="How should I investigate a controversial health claim from an old book?">Historical claim audit</button></div></div></section>
+<section class="section"><div class="container"><div class="notice warning"><strong>Development truth:</strong> This page is intentionally not presented as live ChatGPT. A production conversational assistant requires a server-side model connection, protected credentials, privacy/security controls, usage limits, logging/audit rules, escalation, and testing before public release.</div></div></section>
+</main>
+<footer class="footer"><div class="container footer-grid"><div><strong>Unity Health Hacks</strong><p>Your health. Your pace. We’re in this together.</p><small>Educational information only. Unity Health Hacks does not diagnose, treat, cure, prevent disease, prescribe medication, or replace qualified medical care. Individual experiences and results vary. © 2026 Unity Health Hacks.</small></div><div><strong>Explore</strong><a href="daily-portal.html">My Day</a><a href="food-checker.html">Food &amp; Ingredients</a><a href="guardian-lab.html">Guardian Lab</a><a href="evidence.html">Evidence Standards</a></div><div><strong>Trust</strong><a href="safety.html">Safety</a><a href="privacy.html">Privacy Draft</a><a href="terms.html">Terms Draft</a></div></div></footer>
+<script src="assets/site.js"></script>
+<script>
+(()=>{const p=JSON.parse(localStorage.getItem('uhhGuardianProfile')||'{}');const pc=document.getElementById('guardianPathContext');if(pc){const pm={explore:'Self-Guided / Explore',guardian:'Guardian Research',structured:'Structured Support',human:'Human Support',concierge:'Concierge'};pc.textContent=p.path?`Current test path: ${pm[p.path]||p.path}. Goal: ${p.goal||'not set'}.`:'No member path loaded.';}const h=document.getElementById('guardianGreeting');if(p.name){h.textContent=`Hey, ${p.name}. What would you like to work on today?`;}})();
+</script>
+<script>
+(()=>{
+const q=document.getElementById('guardianQuestion'), out=document.getElementById('guardianAnswer'), tone=document.getElementById('guardianTone');
+const esc=s=>String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function card(label,text){return `<div class="notice" style="margin-top:10px"><strong>${label}:</strong> ${text}</div>`}
+function respond(raw){const x=raw.trim(); if(!x){out.innerHTML='<p class="small">Enter a question first.</p>';return} const l=x.toLowerCase(); let parts=[];
+const lead=tone.value==='gentle'?'We can look at that carefully without jumping to a conclusion.':tone.value==='direct'?'Here is the clean evidence-first way to look at it.':'Let’s separate what is known from what is uncertain.';
+parts.push(`<p><strong>${lead}</strong></p>`);
+if(/stop|quit|come off|discontinue/.test(l)&&/(statin|medication|medicine|blood pressure|prescription)/.test(l)){
+ parts.push(card('Safety boundary','Do not stop or change a prescribed medicine based on this prototype. The useful next step is to identify why it was prescribed, your current risk or measurements, possible side effects, alternatives, and what monitoring would be needed if a clinician changes the plan.'));
+ parts.push(card('Your decision support','Write down the exact concern, symptoms or side effects, the medication and dose, and the questions you want answered. Ask for an explanation of absolute benefit, risks, alternatives, and whether objective follow-up testing is appropriate.'));
+}
+else if(/parasite|pinworm|itch|anus|anal/.test(l)){
+ parts.push(card('Established','Some parasites can cause gastrointestinal or other symptoms. Pinworm can cause nighttime itching around the anus, but a symptom by itself does not prove the diagnosis.'));
+ parts.push(card('Needs testing/context','Exposure history, timing, household spread, travel, pets depending on the organism, and organism-specific testing matter. Different parasites require different approaches.'));
+ parts.push(card('Not established','A full-moon pattern or sugar craving alone should not be treated as diagnostic proof.'));
+}
+else if(/b12|cyanocobalamin|methylcobalamin|hydroxo|adenosyl/.test(l)){
+ parts.push(card('Established','Vitamin B12 is essential. Cyanocobalamin, methylcobalamin, hydroxocobalamin, and adenosylcobalamin are real forms used in supplements or medical products.'));
+ parts.push(card('Uncertain/individual','One form is not proven universally superior for everyone. Absorption, deficiency cause, dose, route, cost, and individual medical circumstances can matter more than marketing language.'));
+ parts.push(card('Good comparison question','Compare the exact form, dose, route, evidence for your situation, third-party quality information, and cost.'));
+}
+else if(/fast|one meal|omad|autophagy/.test(l)){
+ parts.push(card('Established','Meal timing and energy intake can affect weight and metabolic markers, and fasting activates cellular pathways studied under the term autophagy.'));
+ parts.push(card('Important limit','Human outcomes depend on duration, total nutrition, medications, age, pregnancy status, diabetes risk, eating-disorder history, and other factors. Autophagy is not a guarantee of whole-body “rebuilding.”'));
+ parts.push(card('Before experimenting','Clarify your goal, choose a conservative approach, maintain adequate nutrition and hydration, and get professional guidance when medical conditions or medications make fasting higher-risk.'));
+}
+else if(/barcode|upc|ean/.test(l)){
+ parts.push(card('What a barcode is','A UPC/EAN is an identifier or lookup key. It is not evidence and does not itself contain a complete ingredient or health profile.'));
+ parts.push(card('Current 9.3 status','Camera capture can be tested in supported browsers. A verified live product database is not yet connected, so a captured code must not be presented as verified product identity.'));
+ parts.push(card('Future behavior','After a verified database connection, Guardian should separate product identity, ingredient data, nutrition facts, source, verification status, and review date.'));
+}
+else if(/old book|histor|1800|1900|1912|suppressed|subdued/.test(l)){
+ parts.push(card('Audit rule','Old material is evidence of what people observed, believed, tested, or marketed at that time—not automatic proof that the explanation was correct.'));
+ parts.push(card('Research path','Find the original source, date, author, exact claim, contemporary criticism, later human evidence, contradictory evidence, safety history, and any documented commercial or institutional influence.'));
+ parts.push(card('Publication rule','Label the result as historically observed, later validated, partly validated, disproven/superseded, still uncertain, or unsafe.'));
+}
+else if(/label|ingredient|chemical|food|sugar|sodium/.test(l)){
+ parts.push(card('Start with the package','Use serving size, added sugar, sodium, fiber, protein, fats, and the ingredient list. Avoid declaring a food “good” or “bad” from one number or one unfamiliar chemical name.'));
+ parts.push(card('Evidence-first','Explain what each ingredient does, typical exposure, human evidence, regulatory status, and meaningful alternatives.'));
+}
+else {
+ parts.push(card('Known vs unknown','This local prototype does not have a live evidence database or web research connection. It can demonstrate the decision framework, but it should not invent a citation or pretend it checked a source.'));
+ parts.push(card('Next question','What exact claim, ingredient, symptom, product, habit, or historical source do you want to investigate? A precise question makes the evidence audit stronger.'));
+}
+parts.push(`<p class="small"><strong>Your choice:</strong> This response is educational decision support, not a diagnosis or treatment plan. When evidence is mixed, the production Guardian should show that uncertainty and the supporting sources.</p>`); out.innerHTML=parts.join(''); }
+document.getElementById('guardianAsk').addEventListener('click',()=>respond(q.value)); document.querySelectorAll('.sample-q').forEach(b=>b.addEventListener('click',()=>{q.value=b.dataset.q;respond(q.value)}));
+})();
+</script>
+</body></html>
+
