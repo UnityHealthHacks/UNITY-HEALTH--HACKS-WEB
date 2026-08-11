@@ -120,15 +120,4 @@ if(saveCommunity)saveCommunity.addEventListener('click',()=>{
 renderPosts();
 
 
-// Version 9.1 barcode capture prototype. Captures a code only; no product identity is inferred.
-let barcodeStream=null, barcodeTimer=null, barcodeDetector=null;
-const barcodeVideo=$('barcodeVideo'), barcodeStatus=$('barcodeStatus'), startScan=$('startScan'), stopScan=$('stopScan');
-function setBarcodeStatus(message,type=''){if(!barcodeStatus)return;barcodeStatus.textContent=message;barcodeStatus.className='status-box'+(type?' '+type:'')}
-function stopBarcodeCamera(){if(barcodeTimer){clearInterval(barcodeTimer);barcodeTimer=null}if(barcodeStream){barcodeStream.getTracks().forEach(t=>t.stop());barcodeStream=null}if(barcodeVideo){barcodeVideo.srcObject=null;barcodeVideo.classList.remove('active')}if(stopScan)stopScan.hidden=true;if(startScan)startScan.disabled=false}
-startScan?.addEventListener('click',async()=>{if(!window.isSecureContext&&location.protocol!=='http:'){setBarcodeStatus('Camera access normally requires HTTPS or localhost. Manual barcode entry still works.','warn');return}if(!('BarcodeDetector' in window)){setBarcodeStatus('This browser does not provide native barcode detection. Use manual entry or test in a supported mobile browser.','warn');return}if(!navigator.mediaDevices?.getUserMedia){setBarcodeStatus('Camera access is unavailable in this browser. Use manual barcode entry.','warn');return}try{const formats=await BarcodeDetector.getSupportedFormats();const wanted=['ean_13','ean_8','upc_a','upc_e','code_128'].filter(f=>formats.includes(f));barcodeDetector=new BarcodeDetector(wanted.length?{formats:wanted}:undefined);barcodeStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});barcodeVideo.srcObject=barcodeStream;await barcodeVideo.play();barcodeVideo.classList.add('active');startScan.disabled=true;stopScan.hidden=false;setBarcodeStatus('Camera is active. Hold the product barcode steady inside the camera view.');barcodeTimer=setInterval(async()=>{if(!barcodeDetector||!barcodeVideo||barcodeVideo.readyState<2)return;try{const codes=await barcodeDetector.detect(barcodeVideo);if(codes?.length){const value=(codes[0].rawValue||'').trim();if(value){const field=$('barcodeValue');if(field)field.value=value;setBarcodeStatus(`Barcode captured: ${value}. Enter the label information below for the educational review.`);stopBarcodeCamera()}}}catch{}},500)}catch{stopBarcodeCamera();setBarcodeStatus('Camera scanning could not start. Check permission and HTTPS, or use manual barcode entry.','error')}});
-stopScan?.addEventListener('click',()=>{stopBarcodeCamera();setBarcodeStatus('Camera stopped. You can enter a barcode manually.')});
-$('useBarcode')?.addEventListener('click',()=>{const code=($('barcodeValue')?.value||'').trim();if(!code){setBarcodeStatus('Enter or scan a barcode first.','warn');return}setBarcodeStatus(`Product code ${code} is ready. Live product lookup is not connected; enter the package label information below.`);$('foodName')?.focus()});
-window.addEventListener('pagehide',stopBarcodeCamera);
-
 })();
-

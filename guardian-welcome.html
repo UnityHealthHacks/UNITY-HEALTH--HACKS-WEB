@@ -1,2 +1,324 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Guardian Welcome | Unity Health Hacks</title><meta content="Guardian onboarding for Unity Health Hacks 9.3 candidate." name="description"/><meta content="#285c45" name="theme-color"/><link href="assets/styles.css" rel="stylesheet"/><link href="manifest.webmanifest" rel="manifest"/><meta content="UHH-WEBSITE-9.3-CANDIDATE-2026-08-10" name="uhh-project-code"/></head><body><header class="site-header"><div class="container nav"><a class="brand" href="index.html">Unity <span>Health Hacks</span></a><nav class="nav-links"><a href="guardian-lab.html">Guardian</a><a href="member-home.html">My Home</a><a href="membership.html">Paths &amp; Pricing</a></nav></div></header><main><div class="prototype-banner">9.3 DEVELOPMENT — PLAYABLE ONBOARDING. NO LIVE PAYMENT OR LIVE AI YET.</div><section class="hero-compact"><div class="container"><p class="eyebrow">Meet Guardian</p><h1>I’m here to help you explore the direction you want to go.</h1><p class="lead">Tell Guardian what you want to work on. Guardian gives fact-based options, explains what each path includes, and leaves the decision with you.</p></div></section><section class="section"><div class="container grid-2"><div class="form-card"><h2>Start with you</h2><label for="name">What should Guardian call you?</label><input autocomplete="given-name" id="name" placeholder="First name"/><label for="goal" style="margin-top:12px">What would you like to work on?</label><textarea id="goal" placeholder="Examples: understand my food, lose weight, build a meal routine, research products, improve daily habits, get family support" rows="4"></textarea><label for="support" style="margin-top:12px">How much support sounds useful?</label><select id="support"><option value="self">Mostly self-guided</option><option value="guardian">Research help from Guardian</option><option value="structured">A structured plan</option><option value="human">I want a person involved</option><option value="concierge">I want high-touch coordination</option></select><button class="primary" id="continueBtn" style="margin-top:14px" type="button">Show my options</button><p class="small">This prototype stores your name, goal, and selected path only in this browser using local storage. Do not enter private medical records here.</p><p class="small"><strong>No-pressure rule:</strong> If an option feels too expensive or too involved, choose a lower support level and Guardian will narrow the visible paths again. Higher tiers stay hidden until your own request makes them relevant.</p></div><div class="card"><h2>Guardian’s promise</h2><ul class="clean"><li>Your goal sets the direction.</li><li>Facts and sources guide the options.</li><li>Guardian does not diagnose or prescribe.</li><li>Higher-support tiers add research, tools, or qualified human help—not stronger promises.</li><li>You can change or upgrade paths later.</li></ul><div class="notice success"><strong>Core sequence:</strong> Facts → Sources → Context → Options → Your decision.</div></div></div></section><section class="section section-alt"><div class="container"><h2>Your suggested paths</h2><div class="notice"><strong>How matching works in this prototype:</strong> Guardian uses the support level you select plus plain-language keywords in your stated goal to surface only the most relevant starter path(s). It does not diagnose, and it does not use affiliate commission to rank products or support paths.</div><div class="grid-3" id="options"><article class="card"><h3>Start by telling Guardian your goal</h3><p>Options will appear here.</p></article></div></div></section></main><footer class="footer"><div class="container"><small>Development candidate only. Educational lifestyle information; not medical diagnosis or treatment.</small></div></footer><script src="assets/site.js"></script><script>(()=>{const n=document.getElementById('name'),g=document.getElementById('goal'),s=document.getElementById('support'),o=document.getElementById('options');const saved=JSON.parse(localStorage.getItem('uhhGuardianProfile')||'{}');if(saved.name)n.value=saved.name;if(saved.goal)g.value=saved.goal;if(saved.support)s.value=saved.support;function pathCard(title,why,features,key){return `<article class="card"><span class="tag">Suggested starter path</span><h3>${title}</h3><p>${why}</p><ul class="clean">${features.map(x=>`<li>${x}</li>`).join('')}</ul><p><strong>Price:</strong> Under review; final pricing will be shown before any real purchase.</p><button class="btn btn-secondary choose" data-path="${key}" type="button">Choose this test path</button></article>`}function show(){const name=n.value.trim()||'there',goal=g.value.trim()||'your lifestyle goal',q=(g.value||'').toLowerCase();const profile={name:n.value.trim(),goal:g.value.trim(),support:s.value};localStorage.setItem('uhhGuardianProfile',JSON.stringify(profile));let cards=[];const wantsProduct=/product|supplement|vitamin|toothpaste|toothbrush|red light|cold plunge|barcode|ingredient|label/.test(q);const wantsFood=/meal|food|grocery|weight|lose|nutrition|eat|diet/.test(q);if(s.value==='self'){cards.push(pathCard('Self-Guided',`A lower-support place to start with ${goal}.`,[wantsFood?'Food and meal-building tools':'Core learning tools','Evidence library','30-day foundation'],'explore'));if(wantsProduct)cards.push(pathCard('Guardian Research','Useful if you want help comparing a product without adding human coaching.',['Evidence-first product comparison','Source trail','No commission-based ranking'],'guardian'));}else if(s.value==='guardian'){cards.push(pathCard('Guardian Research',`Research support for ${goal}.`,[wantsProduct?'Product and vendor comparison':'Member-directed research','Evidence labels and source trails','Options without pressure'],'guardian'));cards.push(pathCard('Self-Guided','A lower-cost fallback if you prefer to do more on your own.',['Core tools','Evidence library','30-day foundation'],'explore'));}else if(s.value==='structured'){cards.push(pathCard('Structured Support',`A guided starting point for ${name}, focused on ${goal}.`,[wantsFood?'Meal/lifestyle planning tools':'Goal-based plan','Guardian check-ins','Progress tools'],'structured'));cards.push(pathCard('Guardian Research','A lighter option if you do not want a full structured plan.',['Research support','Evidence trails','Member-controlled pace'],'guardian'));}else if(s.value==='human'){cards.push(pathCard('Human Support','For members who explicitly want a qualified person involved.',['Consent-based matching','Location/service routing','Scope and credential checks'],'human'));cards.push(pathCard('Structured Support','A lower-touch option before adding a person.',['Goal-based program','Guardian check-ins','Progress tools'],'structured'));}else{cards.push(pathCard('Concierge / High-Touch','A future high-support path for members requesting coordinated help.',['Deep research','Coordinated qualified support','Transparent scope and cost before purchase'],'concierge'));cards.push(pathCard('Human Support','A less intensive alternative.',['Qualified support','Consent-based contact','Clear boundaries'],'human'));}o.innerHTML=cards.join('');o.querySelectorAll('.choose').forEach(b=>b.onclick=()=>{profile.path=b.dataset.path;localStorage.setItem('uhhGuardianProfile',JSON.stringify(profile));location.href='member-home.html';});}document.getElementById('continueBtn').onclick=show;if(saved.goal)show();})();</script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <title>Guardian Welcome | Unity Health Hacks</title>
+    <meta
+      content="Guardian onboarding for Unity Health Hacks 9.3 candidate."
+      name="description"
+    />
+    <meta content="#285c45" name="theme-color" />
+    <link href="assets/styles.css" rel="stylesheet" />
+    <link href="manifest.webmanifest" rel="manifest" />
+    <meta
+      content="UHH-WEBSITE-9.3-CANDIDATE-2026-08-10"
+      name="uhh-project-code"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="index.html">Unity <span>Health Hacks</span></a>
+        <button
+          aria-controls="navLinks"
+          aria-expanded="false"
+          aria-label="Open navigation"
+          class="menu-btn"
+          id="menuBtn"
+        >
+          ☰ Menu
+        </button>
+        <nav aria-label="Primary navigation" class="nav-links" id="navLinks">
+          <a href="index.html">Home</a
+          ><a href="guardian-lab.html">Guardian</a
+          ><a href="member-home.html">My Home</a
+          ><a href="membership.html">Paths &amp; Pricing</a
+          ><a href="support.html">Support</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="prototype-banner">
+        9.3 DEVELOPMENT — PLAYABLE ONBOARDING. NO LIVE PAYMENT OR LIVE AI YET.
+      </div>
+      <section class="hero-compact">
+        <div class="container">
+          <p class="eyebrow">Meet Guardian</p>
+          <h1>I’m here to help you explore the direction you want to go.</h1>
+          <p class="lead">
+            Tell Guardian what you want to work on. Guardian gives fact-based
+            options, explains what each path includes, and leaves the decision
+            with you.
+          </p>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container grid-2">
+          <div class="form-card">
+            <h2>Start with you</h2>
+            <label for="name">What should Guardian call you?</label
+            ><input
+              autocomplete="given-name"
+              id="name"
+              placeholder="First name"
+            /><label for="goal" style="margin-top: 12px"
+              >What would you like to work on?</label
+            ><textarea
+              id="goal"
+              placeholder="Examples: understand my food, lose weight, build a meal routine, research products, improve daily habits, get family support"
+              rows="4"
+            ></textarea
+            ><label for="support" style="margin-top: 12px"
+              >How much support sounds useful?</label
+            ><select id="support">
+              <option value="self">Mostly self-guided</option>
+              <option value="guardian">Research help from Guardian</option>
+              <option value="structured">A structured plan</option>
+              <option value="human">I want a person involved</option>
+              <option value="concierge">
+                I want high-touch coordination
+              </option></select
+            ><button
+              class="primary"
+              id="continueBtn"
+              style="margin-top: 14px"
+              type="button"
+            >
+              Show my options
+            </button>
+            <p class="small">
+              This prototype stores your name, goal, and selected path only in
+              this browser using local storage. Do not enter private medical
+              records here.
+            </p>
+            <p class="small">
+              <strong>No-pressure rule:</strong> If an option feels too
+              expensive or too involved, choose a lower support level and
+              Guardian will narrow the visible paths again. Higher tiers stay
+              hidden until your own request makes them relevant.
+            </p>
+          </div>
+          <div class="card">
+            <h2>Guardian’s promise</h2>
+            <ul class="clean">
+              <li>Your goal sets the direction.</li>
+              <li>Facts and sources guide the options.</li>
+              <li>Guardian does not diagnose or prescribe.</li>
+              <li>
+                Higher-support tiers add research, tools, or qualified human
+                help—not stronger promises.
+              </li>
+              <li>You can change or upgrade paths later.</li>
+            </ul>
+            <div class="notice success">
+              <strong>Core sequence:</strong> Facts → Sources → Context →
+              Options → Your decision.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section section-alt">
+        <div class="container">
+          <h2>Your suggested paths</h2>
+          <div class="notice">
+            <strong>How matching works in this prototype:</strong> Guardian uses
+            the support level you select plus plain-language keywords in your
+            stated goal to surface only the most relevant starter path(s). It
+            does not diagnose, and it does not use affiliate commission to rank
+            products or support paths.
+          </div>
+          <div class="grid-3" id="options">
+            <article class="card">
+              <h3>Start by telling Guardian your goal</h3>
+              <p>Options will appear here.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="container">
+        <small
+          >Development candidate only. Educational lifestyle information; not
+          medical diagnosis or treatment.</small
+        >
+      </div>
+    </footer>
+    <script src="assets/site.js"></script>
+    <script>
+      (() => {
+        const n = document.getElementById("name"),
+          g = document.getElementById("goal"),
+          s = document.getElementById("support"),
+          o = document.getElementById("options");
+        const saved = JSON.parse(
+          localStorage.getItem("uhhGuardianProfile") || "{}",
+        );
+        if (saved.name) n.value = saved.name;
+        if (saved.goal) g.value = saved.goal;
+        if (saved.support) s.value = saved.support;
+        function pathCard(title, why, features, key) {
+          return `<article class="card"><span class="tag">Suggested starter path</span><h3>${title}</h3><p>${why}</p><ul class="clean">${features.map((x) => `<li>${x}</li>`).join("")}</ul><p><strong>Price:</strong> Under review; final pricing will be shown before any real purchase.</p><button class="btn btn-secondary choose" data-path="${key}" type="button">Choose this test path</button></article>`;
+        }
+        function show() {
+          const name = n.value.trim() || "there",
+            goal = g.value.trim() || "your lifestyle goal",
+            q = (g.value || "").toLowerCase();
+          const profile = {
+            name: n.value.trim(),
+            goal: g.value.trim(),
+            support: s.value,
+          };
+          localStorage.setItem("uhhGuardianProfile", JSON.stringify(profile));
+          let cards = [];
+          const wantsProduct =
+            /product|supplement|vitamin|toothpaste|toothbrush|red light|cold plunge|barcode|ingredient|label/.test(
+              q,
+            );
+          const wantsFood =
+            /meal|food|grocery|weight|lose|nutrition|eat|diet/.test(q);
+          if (s.value === "self") {
+            cards.push(
+              pathCard(
+                "Self-Guided",
+                `A lower-support place to start with ${goal}.`,
+                [
+                  wantsFood
+                    ? "Food and meal-building tools"
+                    : "Core learning tools",
+                  "Evidence library",
+                  "30-day foundation",
+                ],
+                "explore",
+              ),
+            );
+            if (wantsProduct)
+              cards.push(
+                pathCard(
+                  "Guardian Research",
+                  "Useful if you want help comparing a product without adding human coaching.",
+                  [
+                    "Evidence-first product comparison",
+                    "Source trail",
+                    "No commission-based ranking",
+                  ],
+                  "guardian",
+                ),
+              );
+          } else if (s.value === "guardian") {
+            cards.push(
+              pathCard(
+                "Guardian Research",
+                `Research support for ${goal}.`,
+                [
+                  wantsProduct
+                    ? "Product and vendor comparison"
+                    : "Member-directed research",
+                  "Evidence labels and source trails",
+                  "Options without pressure",
+                ],
+                "guardian",
+              ),
+            );
+            cards.push(
+              pathCard(
+                "Self-Guided",
+                "A lower-cost fallback if you prefer to do more on your own.",
+                ["Core tools", "Evidence library", "30-day foundation"],
+                "explore",
+              ),
+            );
+          } else if (s.value === "structured") {
+            cards.push(
+              pathCard(
+                "Structured Support",
+                `A guided starting point for ${name}, focused on ${goal}.`,
+                [
+                  wantsFood
+                    ? "Meal/lifestyle planning tools"
+                    : "Goal-based plan",
+                  "Guardian check-ins",
+                  "Progress tools",
+                ],
+                "structured",
+              ),
+            );
+            cards.push(
+              pathCard(
+                "Guardian Research",
+                "A lighter option if you do not want a full structured plan.",
+                [
+                  "Research support",
+                  "Evidence trails",
+                  "Member-controlled pace",
+                ],
+                "guardian",
+              ),
+            );
+          } else if (s.value === "human") {
+            cards.push(
+              pathCard(
+                "Human Support",
+                "For members who explicitly want a qualified person involved.",
+                [
+                  "Consent-based matching",
+                  "Location/service routing",
+                  "Scope and credential checks",
+                ],
+                "human",
+              ),
+            );
+            cards.push(
+              pathCard(
+                "Structured Support",
+                "A lower-touch option before adding a person.",
+                ["Goal-based program", "Guardian check-ins", "Progress tools"],
+                "structured",
+              ),
+            );
+          } else {
+            cards.push(
+              pathCard(
+                "Concierge / High-Touch",
+                "A future high-support path for members requesting coordinated help.",
+                [
+                  "Deep research",
+                  "Coordinated qualified support",
+                  "Transparent scope and cost before purchase",
+                ],
+                "concierge",
+              ),
+            );
+            cards.push(
+              pathCard(
+                "Human Support",
+                "A less intensive alternative.",
+                [
+                  "Qualified support",
+                  "Consent-based contact",
+                  "Clear boundaries",
+                ],
+                "human",
+              ),
+            );
+          }
+          o.innerHTML = cards.join("");
+          o.querySelectorAll(".choose").forEach(
+            (b) =>
+              (b.onclick = () => {
+                profile.path = b.dataset.path;
+                localStorage.setItem(
+                  "uhhGuardianProfile",
+                  JSON.stringify(profile),
+                );
+                location.href = "member-home.html";
+              }),
+          );
+        }
+        document.getElementById("continueBtn").onclick = show;
+        if (saved.goal) show();
+      })();
+    </script>
+  </body>
+</html>
