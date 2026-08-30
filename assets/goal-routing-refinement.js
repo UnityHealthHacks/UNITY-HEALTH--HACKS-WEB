@@ -7,9 +7,12 @@
     let text = String(raw).slice(0, 500);
     text = text.replace(/blood[- ]pressure/gi, 'blood pressure');
     text = text.replace(/\blose\s+(?:about\s+|some\s+|\d+\s+)?pounds?\b/gi, (m) => `${m} weight loss`);
+    text = text.replace(/\blose\s+(?:about\s+|some\s+|\d+\s+)?weight\b/gi, (m) => `${m} weight loss`);
     text = text.replace(/\bgut help\b/gi, 'gut health');
     text = text.replace(/\bstomach is bad\b/gi, 'digestive discomfort');
     text = text.replace(/\b(?:i )?(?:do not|don't|dont) know where to start\b/gi, 'help me choose where do i start');
+    if (/\b(?:inactive|moving more|start moving|physical activity)\b/i.test(text)) text += ' movement';
+    if (/\bsalt\b/i.test(text) && /\bwater\b/i.test(text)) text += ' hydration';
     return text;
   }
 
@@ -79,10 +82,5 @@
     return base.resolve({ ...input, freeText });
   }
 
-  window.UHHGoalRouting = Object.freeze({
-    ...base,
-    canonicalize,
-    inferGoal,
-    resolve
-  });
+  window.UHHGoalRouting = Object.freeze({ ...base, canonicalize, inferGoal, resolve });
 })();
