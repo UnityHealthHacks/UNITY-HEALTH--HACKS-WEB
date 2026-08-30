@@ -13,7 +13,16 @@ if(isOfficial94Test){
 const $=id=>document.getElementById(id);
 const safeGet=(k,d='')=>{try{return localStorage.getItem(k)??d}catch{return d}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v);return true}catch{return false}};
-const safeRemove=k=>{try{localStorage.removeItem(k)}catch{}};
+const safeRemove=k=>{try{localStorage.removeItem(k);return true}catch{return false}};
+const storageFailureCopy='Could not save on this device. Browser storage may be unavailable or blocked. Your information was not confirmed as saved.';
+function setStorageMessage(anchor,id,text=''){
+ let m=$(id);
+ if(!m&&text){
+  const anchorEl=$(anchor);if(!anchorEl)return;
+  m=document.createElement('p');m.id=id;m.className='small';m.setAttribute('role','status');m.setAttribute('aria-live','polite');anchorEl.insertAdjacentElement('afterend',m);
+ }
+ if(m)m.textContent=text;
+}
 const menuBtn=$('menuBtn'), navLinks=$('navLinks');
 if(menuBtn&&navLinks){
  const close=()=>{navLinks.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');menuBtn.setAttribute('aria-label','Open navigation')};
@@ -26,7 +35,7 @@ document.querySelectorAll('nav a').forEach(a=>{const current=location.pathname.s
 const greeting=$('greeting'), nameInput=$('memberName');
 function setGreeting(name=''){if(!greeting)return;const h=new Date().getHours(),p=h<12?'Good morning':h<18?'Good afternoon':'Good evening';greeting.textContent=name?`${p}, ${name}. Welcome to Unity Health Hacks.`:`${p}. Welcome to Unity Health Hacks.`}
 const savedName=safeGet('uhhName'); if(nameInput)nameInput.value=savedName; setGreeting(savedName);
-const saveName=$('saveName'); if(saveName&&nameInput)saveName.addEventListener('click',()=>{const n=nameInput.value.trim().slice(0,40);if(n){safeSet('uhhName',n);setGreeting(n)}});
+const saveName=$('saveName'); if(saveName&&nameInput)saveName.addEventListener('click',()=>{const n=nameInput.value.trim().slice(0,40);if(n){if(safeSet('uhhName',n)){setGreeting(n);setStorageMessage('saveName','nameStorageMessage')}else setStorageMessage('saveName','nameStorageMessage',storageFailureCopy)}});
 const foodForm=$('foodForm');
 if(foodForm){foodForm.addEventListener('submit',e=>{
  e.preventDefault(); const v=id=>$(id); const name=v('foodName').value.trim().slice(0,120); const num=id=>Math.max(0,Number(v(id)?.value||0));
@@ -41,9 +50,9 @@ if(foodForm){foodForm.addEventListener('submit',e=>{
  const result=$('foodResult'); result.replaceChildren(); const h=document.createElement('h3');h.textContent='Plain-language review'; const ul=document.createElement('ul'); notes.forEach(n=>{const li=document.createElement('li');li.textContent=n;ul.appendChild(li)}); result.append(h,ul); result.hidden=false; result.scrollIntoView({behavior:'smooth',block:'nearest'});
 })}
 function completed(){try{const v=JSON.parse(safeGet('uhhCompletedDays','[]'));return Array.isArray(v)?v.filter(n=>Number.isInteger(n)&&n>=1&&n<=30):[]}catch{return []}}
-function saveCompleted(a){safeSet('uhhCompletedDays',JSON.stringify([...new Set(a)].sort((x,y)=>x-y)))}
-document.querySelectorAll('[data-day-complete]').forEach(btn=>{const d=Number(btn.dataset.dayComplete);if(completed().includes(d))btn.textContent=`Day ${d} completed ✓`;btn.addEventListener('click',()=>{const a=completed();if(!a.includes(d))a.push(d);saveCompleted(a);btn.textContent=`Day ${d} completed ✓`})});
-const grid=$('progressGrid'); if(grid){const render=()=>{const a=completed();grid.replaceChildren();for(let d=1;d<=30;d++){const b=document.createElement('button');b.type='button';b.className='day-toggle'+(a.includes(d)?' complete':'');b.textContent=`Day ${d}${a.includes(d)?' ✓':''}`;b.addEventListener('click',()=>{const x=completed();const i=x.indexOf(d);i>=0?x.splice(i,1):x.push(d);saveCompleted(x);render()});grid.appendChild(b)}$('progressCount').textContent=`${a.length} of 30 days complete`;$('progressFill').style.width=`${a.length/30*100}%`};render();$('resetProgress')?.addEventListener('click',()=>{if(confirm('Reset the local 30-day completion tracker?')){safeRemove('uhhCompletedDays');render()}})}
+function saveCompleted(a){return safeSet('uhhCompletedDays',JSON.stringify([...new Set(a)].sort((x,y)=>x-y)))}
+document.querySelectorAll('[data-day-complete]').forEach(btn=>{const d=Number(btn.dataset.dayComplete);if(completed().includes(d))btn.textContent=`Day ${d} completed ✓`;btn.addEventListener('click',()=>{const a=completed();if(!a.includes(d))a.push(d);if(saveCompleted(a)){btn.textContent=`Day ${d} completed ✓`;setStorageMessage(btn.id||'','dayStorageMessage')}else setStorageMessage(btn.id||'saveName','dayStorageMessage',storageFailureCopy)})});
+const grid=$('progressGrid'); if(grid){const render=()=>{const a=completed();grid.replaceChildren();for(let d=1;d<=30;d++){const b=document.createElement('button');b.type='button';b.className='day-toggle'+(a.includes(d)?' complete':'');b.textContent=`Day ${d}${a.includes(d)?' ✓':''}`;b.addEventListener('click',()=>{const x=completed();const i=x.indexOf(d);i>=0?x.splice(i,1):x.push(d);if(saveCompleted(x)){setStorageMessage('progressGrid','progressStorageMessage');render()}else setStorageMessage('progressGrid','progressStorageMessage',storageFailureCopy)});grid.appendChild(b)}$('progressCount').textContent=`${a.length} of 30 days complete`;$('progressFill').style.width=`${a.length/30*100}%`};render();$('resetProgress')?.addEventListener('click',()=>{if(confirm('Reset the local 30-day completion tracker?')){if(safeRemove('uhhCompletedDays')){setStorageMessage('progressGrid','progressStorageMessage');render()}else setStorageMessage('progressGrid','progressStorageMessage',storageFailureCopy)}})}
 if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 
 // Master 8.03 local development features
@@ -56,12 +65,17 @@ if(saveProfile&&nameInput){
  saveProfile.addEventListener('click',()=>{
   const n=nameInput.value.trim().slice(0,40);
   const tone=profileTone?.value||'balanced';
-  if(n) safeSet('uhhName',n);
-  safeSet('uhhTone',tone);
-  if(pacePreference) safeSet('uhhPace',pacePreference.value||'steady');
-  setGreeting(n);
-  const m=$('profileMessage'); if(m)m.textContent='Saved locally on this device.';
-  renderPatternPrompt();
+  const results=[];
+  if(n) results.push(safeSet('uhhName',n));
+  results.push(safeSet('uhhTone',tone));
+  if(pacePreference) results.push(safeSet('uhhPace',pacePreference.value||'steady'));
+  const ok=results.every(Boolean);
+  const m=$('profileMessage');
+  if(ok){
+   setGreeting(n);
+   if(m)m.textContent='Saved locally on this device.';
+   renderPatternPrompt();
+  }else if(m)m.textContent=storageFailureCopy;
  });
 }
 const todayKey=()=>{const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`};
@@ -72,11 +86,11 @@ document.querySelectorAll('[data-daily-check]').forEach(c=>{
 const saveDaily=$('saveDailyCheck');
 if(saveDaily)saveDaily.addEventListener('click',()=>{
  const chosen=[...document.querySelectorAll('[data-daily-check]:checked')].map(c=>c.dataset.dailyCheck);
- safeSet('uhhDaily:'+todayKey(),chosen.join(','));
- const m=$('dailyMessage');if(m)m.textContent=chosen.length?`${chosen.length} reflection item${chosen.length===1?'':'s'} saved for today.`:'Today’s reflection was saved with no boxes selected.';
+ const ok=safeSet('uhhDaily:'+todayKey(),chosen.join(','));
+ const m=$('dailyMessage');if(m)m.textContent=ok?(chosen.length?`${chosen.length} reflection item${chosen.length===1?'':'s'} saved for today.`:'Today’s reflection was saved with no boxes selected.'):storageFailureCopy;
 });
 function getJournal(){try{const v=JSON.parse(safeGet('uhhJournal','[]'));return Array.isArray(v)?v:[]}catch{return[]}}
-function saveJournalData(a){safeSet('uhhJournal',JSON.stringify(a.slice(0,100)))}
+function saveJournalData(a){return safeSet('uhhJournal',JSON.stringify(a.slice(0,100)))}
 function renderJournal(){
  const box=$('journalList');if(!box)return;box.replaceChildren();
  const items=getJournal();
@@ -85,14 +99,14 @@ function renderJournal(){
   const art=document.createElement('article');art.className='journal-entry';
   const t=document.createElement('time');t.textContent=new Date(item.created).toLocaleString();
   const p=document.createElement('p');p.textContent=item.text;
-  const b=document.createElement('button');b.type='button';b.textContent='Delete';b.addEventListener('click',()=>{saveJournalData(getJournal().filter(x=>x.id!==item.id));renderJournal();renderPatternPrompt()});
+  const b=document.createElement('button');b.type='button';b.textContent='Delete';b.addEventListener('click',()=>{if(saveJournalData(getJournal().filter(x=>x.id!==item.id))){setStorageMessage('saveJournal','journalStorageMessage');renderJournal();renderPatternPrompt()}else setStorageMessage('saveJournal','journalStorageMessage',storageFailureCopy)});
   art.append(t,p,b);box.appendChild(art);
  });
 }
 const saveJournal=$('saveJournal');
 if(saveJournal)saveJournal.addEventListener('click',()=>{
  const input=$('journalText');const text=input?.value.trim().slice(0,1200);if(!text)return;
- const items=getJournal();items.unshift({id:Date.now(),created:new Date().toISOString(),text});saveJournalData(items);input.value='';renderJournal();renderPatternPrompt();
+ const items=getJournal();items.unshift({id:Date.now(),created:new Date().toISOString(),text});if(saveJournalData(items)){setStorageMessage('saveJournal','journalStorageMessage');input.value='';renderJournal();renderPatternPrompt()}else setStorageMessage('saveJournal','journalStorageMessage',storageFailureCopy);
 });
 function renderPatternPrompt(){
  const box=$('patternPrompt');if(!box)return;
@@ -105,7 +119,7 @@ function renderPatternPrompt(){
 renderJournal();renderPatternPrompt();
 
 function getPosts(){try{const v=JSON.parse(safeGet('uhhCommunityPosts','[]'));return Array.isArray(v)?v:[]}catch{return[]}}
-function savePosts(a){safeSet('uhhCommunityPosts',JSON.stringify(a.slice(0,50)))}
+function savePosts(a){return safeSet('uhhCommunityPosts',JSON.stringify(a.slice(0,50)))}
 function renderPosts(){
  const box=$('communityPosts');if(!box)return;box.replaceChildren();
  const posts=getPosts();
@@ -116,7 +130,7 @@ function renderPosts(){
   const h=document.createElement('h3');h.textContent=post.name;
   const p=document.createElement('p');p.textContent=post.text;
   const s=document.createElement('small');s.textContent=new Date(post.created).toLocaleString()+' · Personal experience, not medical advice.';
-  const b=document.createElement('button');b.type='button';b.textContent='Delete local post';b.addEventListener('click',()=>{savePosts(getPosts().filter(x=>x.id!==post.id));renderPosts()});
+  const b=document.createElement('button');b.type='button';b.textContent='Delete local post';b.addEventListener('click',()=>{if(savePosts(getPosts().filter(x=>x.id!==post.id))){setStorageMessage('saveCommunityPost','communityStorageMessage');renderPosts()}else setStorageMessage('saveCommunityPost','communityStorageMessage',storageFailureCopy)});
   art.append(tag,h,p,s,b);box.appendChild(art);
  });
 }
@@ -125,7 +139,7 @@ if(saveCommunity)saveCommunity.addEventListener('click',()=>{
  const name=$('communityName')?.value.trim().slice(0,50)||'Community member';
  const category=$('communityCategory')?.value||'Community';
  const text=$('communityText')?.value.trim().slice(0,1500);if(!text)return;
- const posts=getPosts();posts.unshift({id:Date.now(),name,category,text,created:new Date().toISOString()});savePosts(posts);$('communityText').value='';renderPosts();
+ const posts=getPosts();posts.unshift({id:Date.now(),name,category,text,created:new Date().toISOString()});if(savePosts(posts)){setStorageMessage('saveCommunityPost','communityStorageMessage');$('communityText').value='';renderPosts()}else setStorageMessage('saveCommunityPost','communityStorageMessage',storageFailureCopy);
 });
 renderPosts();
 
