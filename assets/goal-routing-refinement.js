@@ -24,13 +24,34 @@
     const hasBP = /blood pressure|hypertension|\bbp\b/.test(text);
     const hasGut = /gut|microbiome/.test(text);
     const hasDigestive = /stomach|digestive|reflux|heartburn|gerd|bloat|bowel/.test(text);
-
     if (hasWeight && hasMetabolic) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: true, candidates: ['G01_WEIGHT', 'G07_METABOLIC'] };
     if (hasWeight && hasFasting) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: true, candidates: ['G01_WEIGHT', 'G08_FASTING_MEAL_TIMING'] };
     if (hasFasting && hasBP) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: true, candidates: ['G08_FASTING_MEAL_TIMING', 'G05_BLOOD_PRESSURE'] };
     if (hasGut && hasDigestive) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: true, candidates: ['G03_GUT_MICROBIOME', 'G04_DIGESTIVE_REFLUX'] };
     if (/\b(?:better|more) energy\b/.test(text) && !hasMetabolic && !hasFasting) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: false, candidates: ['G12_HELP_ME_CHOOSE'] };
     return base.inferGoal(text);
+  }
+
+  function boundaryResult(message) {
+    return {
+      kind: 'boundary', buildId: base.BUILD_ID, taxonomyVersion: base.TAXONOMY_VERSION,
+      goalId: 'G12_HELP_ME_CHOOSE', routeId: 'UNSUPPORTED', goalLabel: 'Outside current UHH supported route set',
+      supportId: 'S00_FREE', safetyIntercept: 'none',
+      title: 'Educational boundary', message,
+      startFree: { title: 'Evidence and safety information', href: 'evidence.html' },
+      pricingState: 'FREE', changeGoal: true, noDiagnosis: true, suppressSales: true
+    };
+  }
+
+  function unsupportedBoundary(raw = '') {
+    const text = canonicalize(raw).toLowerCase();
+    if (/diagnose (?:me|what|which)|what disease do i have|tell me what disease|diagnose my symptoms/.test(text)) {
+      return boundaryResult('Unity Health Hacks does not diagnose a disease from symptoms or route text. It can provide general education and help organize questions or evaluation preparation without assigning a diagnosis.');
+    }
+    if (/which prescription (?:should|do) i take|tell me (?:exactly )?(?:which|what) prescription|prescribe (?:me|a)|what medication should i take|which medication should i take/.test(text)) {
+      return boundaryResult('Unity Health Hacks does not choose or prescribe a prescription medication. It can provide general education about a medication topic and help organize questions for an appropriate qualified clinician.');
+    }
+    return null;
   }
 
   function dehydrationSafety(raw = '') {
@@ -54,8 +75,7 @@
     return {
       kind: 'clarification', buildId: base.BUILD_ID, taxonomyVersion: base.TAXONOMY_VERSION,
       goalId: 'G12_HELP_ME_CHOOSE', routeId: 'G12_HELP', supportId: base.normalizeSupport(supportId),
-      safetyIntercept: 'clarification',
-      candidates: found.candidates.map((id) => ({ id, label: labels[id] || id })),
+      safetyIntercept: 'clarification', candidates: found.candidates.map((id) => ({ id, label: labels[id] || id })),
       title: 'One quick clarification',
       message: 'Your wording fits more than one supported goal. Choose the one you want to make primary rather than having UHH guess or medicalize the request.',
       startFree: { title: 'Help Me Choose', href: 'index.html#goal-first' },
@@ -66,21 +86,26 @@
   function resolve(input = {}) {
     const originalText = String(input.freeText || input.goalText || '').slice(0, 500);
     const freeText = canonicalize(originalText);
+    const boundary = unsupportedBoundary(freeText);
+    if (boundary) return { ...boundary, supportId: base.normalizeSupport(input.supportId || input.support) };
     const customSafety = dehydrationSafety(freeText);
     if (customSafety) return { ...customSafety, supportId: base.normalizeSupport(input.supportId || input.support) };
 
     const explicitGoalId = input.goalId || '';
+    let routed;
     if (!explicitGoalId || explicitGoalId === 'G13_OTHER') {
       const found = inferGoal(freeText);
       if (found.ambiguous) return clarificationResult(found, input.supportId || input.support);
-      const routed = base.resolve({ ...input, goalId: found.goalId, freeText });
-      if (routed.kind === 'route' && originalText.trim()) {
-        routed.reasonText = `Your words most closely match “${routed.goalLabel}.” This is deterministic educational routing, not a diagnosis.`;
-      }
-      return routed;
+      routed = base.resolve({ ...input, goalId: found.goalId, freeText });
+      if (routed.kind === 'route' && originalText.trim()) routed.reasonText = `Your words most closely match “${routed.goalLabel}.” This is deterministic educational routing, not a diagnosis.`;
+    } else {
+      routed = base.resolve({ ...input, freeText });
     }
-    return base.resolve({ ...input, freeText });
+    if (routed.kind === 'route' && /guarantee.*(?:weight|pounds?)|(?:weight|pounds?).*guarantee/.test(freeText.toLowerCase())) {
+      routed.limitText = 'UHH cannot guarantee a specific amount or deadline for weight change. Individual outcomes vary, and the route remains educational.';
+    }
+    return routed;
   }
 
-  window.UHHGoalRouting = Object.freeze({ ...base, canonicalize, inferGoal, resolve });
+  window.UHHGoalRouting = Object.freeze({ ...base, canonicalize, inferGoal, unsupportedBoundary, resolve });
 })();
