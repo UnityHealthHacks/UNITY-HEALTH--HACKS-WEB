@@ -1,12 +1,11 @@
 {
   "name": "Unity Health Hacks",
   "short_name": "UHH",
-  "start_url": "./member-home.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#285c45",
-  "description": "Unity Health Hacks evidence-first lifestyle companion beta candidate.",
-  "id": "UHH-WEBSITE-9.3-BETA-CANDIDATE-2026-08-10",
+  "description": "Unity Health Hacks 9.5 evidence-first goal-first lifestyle education development build.",
+  "id": "UHH-WEBSITE-9.5-DEVELOPMENT-2026-08-30",
   "scope": "./"
 }
-
