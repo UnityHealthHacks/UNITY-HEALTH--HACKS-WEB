@@ -1,156 +1,110 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width,initial-scale=1" name="viewport" />
-    <title>Guardian Welcome | Unity Health Hacks</title>
-    <meta
-      content="Guardian onboarding for Unity Health Hacks 9.4 development."
-      name="description"
-    />
-    <meta content="#285c45" name="theme-color" />
-    <link href="assets/styles.css" rel="stylesheet" />
-    <link href="manifest.webmanifest" rel="manifest" />
-    <meta
-      content="UHH-WEBSITE-9.4-DEVELOPMENT-2026-08-11"
-      name="uhh-project-code"
-    />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container nav">
-        <a class="brand" href="index.html">Unity <span>Health Hacks</span></a>
-        <button
-          aria-controls="navLinks"
-          aria-expanded="false"
-          aria-label="Open navigation"
-          class="menu-btn"
-          id="menuBtn"
-        >
-          ☰ Menu
-        </button>
-        <nav aria-label="Primary navigation" class="nav-links" id="navLinks">
-          <a href="index.html">Home</a
-          ><a href="guardian-lab.html">Guardian</a
-          ><a href="member-home.html">My Home</a
-          ><a href="membership.html">Paths &amp; Pricing</a
-          ><a href="support.html">Support</a>
-        </nav>
-      </div>
-    </header>
-    <main>
-      <div class="prototype-banner">
-        9.4 DEVELOPMENT — PLAYABLE ONBOARDING. NO LIVE PAYMENT OR LIVE AI YET.
-      </div>
-      <section class="hero-compact">
-        <div class="container">
-          <p class="eyebrow">Meet Guardian</p>
-          <h1>I’m here to help you explore the direction you want to go.</h1>
-          <p class="lead">
-            Tell Guardian what you want to work on. Guardian gives fact-based
-            options, explains what each path includes, and leaves the decision
-            with you.
-          </p>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guardian Welcome | Unity Health Hacks</title>
+  <meta name="description" content="Goal-first Guardian onboarding for the Unity Health Hacks 9.5 development build." />
+  <meta name="theme-color" content="#285c45" />
+  <link href="assets/styles.css" rel="stylesheet" />
+  <link href="manifest.webmanifest" rel="manifest" />
+  <meta name="uhh-project-code" content="UHH-WEBSITE-9.5-DEVELOPMENT-2026-08-30" />
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">Unity <span>Health Hacks</span></a>
+    <button aria-controls="navLinks" aria-expanded="false" aria-label="Open navigation" class="menu-btn" id="menuBtn">☰ Menu</button>
+    <nav aria-label="Primary navigation" class="nav-links" id="navLinks">
+      <a href="index.html">Home</a><a href="guardian-welcome.html">Guardian</a><a href="guardian-lab.html">Guardian Lab</a><a href="member-home.html">My Home</a><a href="membership.html">Paths &amp; Pricing</a><a href="support.html">Support</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="prototype-banner">9.5 DEVELOPMENT — GOAL-FIRST GUARDIAN ONBOARDING. LOCAL RULES ONLY; NO LIVE PAYMENT, LIVE AI, OR SECURE HEALTH ACCOUNT.</div>
+  <section class="hero-compact">
+    <div class="container">
+      <p class="eyebrow">Meet Guardian</p>
+      <h1>Start with what you want to accomplish.</h1>
+      <p class="lead">Guardian uses the same deterministic goal taxonomy as the Home front door. Your goal determines what education is relevant; your support preference determines how much structure is shown; safety can override both.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid-2">
+      <form class="form-card" id="guardianOnboarding" data-goal-routing-form data-result-target="#guardianRouteResult" data-save-profile="true" novalidate>
+        <h2>Start with you</h2>
+        <div class="form-row">
+          <label for="name">What should Guardian call you? <span class="small">(optional)</span></label>
+          <input autocomplete="given-name" id="name" data-routing-name maxlength="40" placeholder="First name" />
         </div>
-      </section>
-      <section class="section">
-        <div class="container grid-2">
-          <form class="form-card" id="guardianOnboarding" novalidate>
-            <h2>Start with you</h2>
-            <label for="name">What should Guardian call you?</label
-            ><input
-              autocomplete="given-name"
-              id="name"
-              placeholder="First name"
-            /><label for="goal" style="margin-top: 12px"
-              >What would you like to work on?</label
-            ><textarea
-              id="goal"
-              placeholder="Examples: understand my food, lose weight, build a meal routine, research products, improve daily habits, get family support"
-              rows="4"
-            ></textarea
-            ><label for="support" style="margin-top: 12px"
-              >How much support sounds useful?</label
-            ><select id="support">
-              <option value="self">Mostly self-guided</option>
-              <option value="guardian">Research help from Guardian</option>
-              <option value="structured">A structured plan</option>
-              <option value="human">I want a person involved</option>
-              <option value="concierge">
-                I want high-touch coordination
-              </option></select
-            ><button
-              class="primary"
-              id="continueBtn"
-              style="margin-top: 14px"
-              type="submit"
-            >
-              Show my options
-            </button>
-            <p
-              class="field-status"
-              id="onboardingStatus"
-              aria-live="polite"
-            ></p>
-            <p class="small">
-              This prototype stores your name, goal, and selected path only in
-              this browser using local storage. Do not enter private medical
-              records here.
-            </p>
-            <p class="small">
-              <strong>No-pressure rule:</strong> If an option feels too
-              expensive or too involved, choose a lower support level and
-              Guardian will narrow the visible paths again. Higher tiers stay
-              hidden until your own request makes them relevant.
-            </p>
-          </form>
-          <div class="card">
-            <h2>Guardian’s promise</h2>
-            <ul class="clean">
-              <li>Your goal sets the direction.</li>
-              <li>Facts and sources guide the options.</li>
-              <li>Guardian does not diagnose or prescribe.</li>
-              <li>
-                Higher-support tiers add research, tools, or qualified human
-                help—not stronger promises.
-              </li>
-              <li>You can change or upgrade paths later.</li>
-            </ul>
-            <div class="notice success">
-              <strong>Core sequence:</strong> Facts → Sources → Context →
-              Options → Your decision.
-            </div>
+        <fieldset class="checks" style="margin-top:14px">
+          <legend>What are you looking to accomplish?</legend>
+          <div class="grid-2">
+            <label class="card"><input type="radio" name="uhhGoal" value="G01_WEIGHT" /> Manage my weight or body composition</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G02_GENERAL_LIFESTYLE" /> Improve my everyday habits</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G03_GUT_MICROBIOME" /> Support my gut and microbiome</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G04_DIGESTIVE_REFLUX" /> Work on digestive comfort or reflux</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G05_BLOOD_PRESSURE" /> Support healthier blood-pressure habits</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G06_LIPIDS_CV_RISK" /> Learn about cholesterol, lipids, and heart-risk habits</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G07_METABOLIC" /> Improve my metabolic-health habits</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G08_FASTING_MEAL_TIMING" /> Learn about fasting and meal timing</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G09_PARASITE_PET_EXPOSURE" /> Learn about parasite or pet-exposure concerns</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G10_FOOD_INGREDIENT" /> Understand a food, ingredient, or label</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G11_SLEEP_MOVEMENT_HYDRATION" /> Work on sleep, movement, hydration, or routines</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G12_HELP_ME_CHOOSE" /> I’m not sure where to start</label>
+            <label class="card"><input type="radio" name="uhhGoal" value="G13_OTHER" /> Something else</label>
           </div>
+        </fieldset>
+        <div class="form-row" style="margin-top:14px">
+          <label for="goal">Optional: describe the goal in your own words</label>
+          <textarea id="goal" data-goal-text maxlength="500" rows="3" placeholder="Keep this general. Do not enter private medical records, medication lists, lab results, or identifying health information."></textarea>
         </div>
-      </section>
-      <section class="section section-alt">
-        <div class="container">
-          <h2>Your suggested paths</h2>
-          <div class="notice">
-            <strong>How matching works in this prototype:</strong> Guardian uses
-            the support level you select plus plain-language keywords in your
-            stated goal to surface only the most relevant starter path(s). It
-            does not diagnose, and it does not use affiliate commission to rank
-            products or support paths.
-          </div>
-          <div class="grid-3" id="options" tabindex="-1">
-            <article class="card">
-              <h3>Start by telling Guardian your goal</h3>
-              <p>Options will appear here.</p>
-            </article>
-          </div>
+        <div class="form-row">
+          <label for="support">How much structure would help right now?</label>
+          <select id="support" data-support>
+            <option value="S00_FREE">I want to learn and choose for myself — Start Free</option>
+            <option value="S01_SELF_GUIDED">Give me a simple self-guided path</option>
+            <option value="S02_STRUCTURED">Give me a structured day-by-day or week-by-week path</option>
+            <option value="S03_GUARDIAN_RESEARCH">I want Guardian support when it is available</option>
+            <option value="S04_HUMAN">I may want human accountability when it is available</option>
+          </select>
         </div>
-      </section>
-    </main>
-    <footer class="footer">
-      <div class="container">
-        <small
-          >Development candidate only. Educational lifestyle information; not
-          medical diagnosis or treatment.</small
-        >
+        <button class="primary" type="submit">Show My Starting Options</button>
+        <p class="field-status" data-routing-status aria-live="polite"></p>
+        <p class="small">This development form saves only low-sensitivity routing fields such as display name, selected goal ID, support ID, route ID, and taxonomy version. It does not save the optional free-text goal as a health profile.</p>
+      </form>
+
+      <div class="card">
+        <h2>Guardian’s promise</h2>
+        <ul class="clean">
+          <li>Your goal sets the direction.</li>
+          <li>Support level does not decide which health topic is relevant.</li>
+          <li>Safety instructions outrank sales or program suggestions.</li>
+          <li>Guardian does not diagnose, prescribe, or tell you to change a prescription.</li>
+          <li>Start Free remains available where a safe educational route exists.</li>
+          <li>Live AI, live human support, credential routing, and checkout remain unavailable until their own gates pass.</li>
+        </ul>
+        <div class="notice success"><strong>Core sequence:</strong> Safety → Goal → Support → Availability → Options → Your decision.</div>
       </div>
-    </footer>
-    <script src="assets/site.js"></script>
-    <script src="assets/guardian.js"></script>
-  </body>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <h2>Your suggested path</h2>
+      <div class="notice"><strong>How matching works:</strong> explicit goal selection wins unless a safety override applies. Free text uses grouped deterministic intent cues. If two goals are genuinely plausible, UHH asks for clarification instead of guessing or choosing the more expensive route.</div>
+      <div class="form-card" id="guardianRouteResult" data-goal-routing-result tabindex="-1" style="margin-top:16px">
+        <p class="small">Choose a goal and Guardian will show one primary educational route, a free starting point, and an alternative when useful.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer">
+  <div class="container"><small>9.5 development candidate only. Educational lifestyle information; not medical diagnosis or treatment. No live checkout or production AI is connected.</small></div>
+</footer>
+<script src="assets/site.js?v=20260830-95-1"></script>
+<script src="assets/goal-routing.js?v=20260830-95-1"></script>
+<script src="assets/goal-routing-ui.js?v=20260830-95-1"></script>
+</body>
 </html>
