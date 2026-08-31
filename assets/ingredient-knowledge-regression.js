@@ -14,7 +14,8 @@ function run(){
 
  const known=k.lookupTerm('xanthan gum');
  check(known.state==='known','IK-01 known exact term');
- check(known.record?.purposeFact==='a thickener or stabilizer','IK-01 xanthan explanation');
+ const xanthanPurpose=String(known.record?.purposeFact||'').toLowerCase();
+ check(xanthanPurpose.includes('thickener')&&xanthanPurpose.includes('stabilizer'),'IK-01 xanthan explanation');
 
  const caseVariant=k.lookupTerm('XANTHAN GUM');
  check(caseVariant.state==='known'&&caseVariant.canonicalName==='xanthan gum','IK-02 case normalization');
@@ -28,7 +29,7 @@ function run(){
 
  const collisions=k.records.flatMap(r=>[r.name,...r.aliases]).map(v=>String(v).toLowerCase());
  const duplicates=collisions.filter((v,i,a)=>a.indexOf(v)!==i);
- check(duplicates.length===0,'IK-05 no current ambiguous key collisions','Current staged dataset contains no deliberately ambiguous aliases; engine returns ambiguous if future collisions exist.');
+ check(duplicates.length===0,'IK-05 no current ambiguous key collisions','Current dataset contains no deliberately ambiguous aliases; engine returns ambiguous if future collisions exist.');
 
  const falsePositive=k.lookupTerm('xanthan gummy candy');
  check(falsePositive.state==='unknown','IK-06 substring false-positive rejection');
@@ -41,9 +42,12 @@ function run(){
  check(Boolean(structure.purposeFact&&structure.context&&structure.interpretationBoundary&&structure.preferenceBoundary),'IK-08 fact/context/preference separation');
 
  const status=k.getDatasetStatus();
- check(status.recordCount===11,'IK-09 expected staged record count');
- check(status.allReleaseReady===false&&status.releaseReadyCount===0,'IK-09 metadata gate fails closed until sources reviewed');
- check(k.records.every(r=>r.evidence&&Array.isArray(r.evidence.sources)&&'reviewStatus' in r.evidence&&'releaseReady' in r.evidence),'IK-09 evidence metadata schema present');
+ check(status.recordCount===11,'IK-09 expected record count');
+ check(status.allSourceAnchored===true&&status.sourceAnchoredCount===11,'IK-09 all records have reviewed source anchors');
+ check(status.allReleaseReady===false&&status.releaseReadyCount===0,'IK-09 release gate remains fail-closed pending independent regression/integration');
+ check(k.records.every(r=>r.evidence&&Array.isArray(r.evidence.sources)&&r.evidence.sources.length>0),'IK-09 every record has at least one source');
+ check(k.records.every(r=>r.evidence.sources.every(s=>s&&s.authority&&s.citation&&/^https:\/\//.test(s.url))),'IK-09 source metadata complete');
+ check(k.records.every(r=>r.evidence.reviewedAt==='2026-08-31'&&r.evidence.reviewStatus==='source-anchored-pending-regression'&&r.evidence.releaseReady===false),'IK-09 review state explicit and non-release');
 
  check(typeof k.lookupTerm==='function'&&typeof k.analyzeIngredientList==='function','IK-10 local deterministic API');
  check(!('fetch' in k)&&!('askAI' in k)&&!('productLookup' in k),'IK-10 no live AI/product dependency exposed');
