@@ -18,7 +18,7 @@ const storageFailureCopy='Could not save on this device. Browser storage may be 
 function setStorageMessage(anchor,id,text=''){
  let m=$(id);
  if(!m&&text){
-  const anchorEl=$(anchor);if(!anchorEl)return;
+  const anchorEl=typeof anchor==='string'?$(anchor):anchor;if(!anchorEl)return;
   m=document.createElement('p');m.id=id;m.className='small';m.setAttribute('role','status');m.setAttribute('aria-live','polite');anchorEl.insertAdjacentElement('afterend',m);
  }
  if(m)m.textContent=text;
@@ -51,7 +51,7 @@ if(foodForm){foodForm.addEventListener('submit',e=>{
 })}
 function completed(){try{const v=JSON.parse(safeGet('uhhCompletedDays','[]'));return Array.isArray(v)?v.filter(n=>Number.isInteger(n)&&n>=1&&n<=30):[]}catch{return []}}
 function saveCompleted(a){return safeSet('uhhCompletedDays',JSON.stringify([...new Set(a)].sort((x,y)=>x-y)))}
-document.querySelectorAll('[data-day-complete]').forEach(btn=>{const d=Number(btn.dataset.dayComplete);if(completed().includes(d))btn.textContent=`Day ${d} completed ✓`;btn.addEventListener('click',()=>{const a=completed();if(!a.includes(d))a.push(d);if(saveCompleted(a)){btn.textContent=`Day ${d} completed ✓`;setStorageMessage(btn.id||'','dayStorageMessage')}else setStorageMessage(btn.id||'saveName','dayStorageMessage',storageFailureCopy)})});
+document.querySelectorAll('[data-day-complete]').forEach(btn=>{const d=Number(btn.dataset.dayComplete);if(completed().includes(d))btn.textContent=`Day ${d} completed ✓`;btn.addEventListener('click',()=>{const a=completed();if(!a.includes(d))a.push(d);if(saveCompleted(a)){btn.textContent=`Day ${d} completed ✓`;setStorageMessage(btn,'dayStorageMessage')}else setStorageMessage(btn,'dayStorageMessage',storageFailureCopy)})});
 const grid=$('progressGrid'); if(grid){const render=()=>{const a=completed();grid.replaceChildren();for(let d=1;d<=30;d++){const b=document.createElement('button');b.type='button';b.className='day-toggle'+(a.includes(d)?' complete':'');b.textContent=`Day ${d}${a.includes(d)?' ✓':''}`;b.addEventListener('click',()=>{const x=completed();const i=x.indexOf(d);i>=0?x.splice(i,1):x.push(d);if(saveCompleted(x)){setStorageMessage('progressGrid','progressStorageMessage');render()}else setStorageMessage('progressGrid','progressStorageMessage',storageFailureCopy)});grid.appendChild(b)}$('progressCount').textContent=`${a.length} of 30 days complete`;$('progressFill').style.width=`${a.length/30*100}%`};render();$('resetProgress')?.addEventListener('click',()=>{if(confirm('Reset the local 30-day completion tracker?')){if(safeRemove('uhhCompletedDays')){setStorageMessage('progressGrid','progressStorageMessage');render()}else setStorageMessage('progressGrid','progressStorageMessage',storageFailureCopy)}})}
 if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 
