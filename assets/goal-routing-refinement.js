@@ -50,6 +50,8 @@
     const hasGut = /\bgut\b|microbiome/.test(text);
     const hasDigestive = /stomach|digestive|reflux|heartburn|gerd|bloat|bowel/.test(text);
     const hasLipids = /cholesterol|\bldl\b|\bhdl\b|triglyceride|apob|apo b|lp\(a\)|lipid|statin|cardiovascular risk/.test(text);
+    const glucoseMedication = /\binsulin\b|sulfonylurea|meglitinide|glucose[- ]lowering|diabetes (?:medicine|medication)|blood sugar (?:medicine|medication)/.test(text);
+    if (hasMetabolic && hasFasting && glucoseMedication) return { goalId: 'G08_FASTING_MEAL_TIMING', ambiguous: false, candidates: ['G08_FASTING_MEAL_TIMING'] };
     if (hasWeight && hasMetabolic) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: true, candidates: ['G01_WEIGHT', 'G07_METABOLIC'] };
     if (hasWeight && hasFasting) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: true, candidates: ['G01_WEIGHT', 'G08_FASTING_MEAL_TIMING'] };
     if (hasFasting && hasBP) return { goalId: 'G12_HELP_ME_CHOOSE', ambiguous: true, candidates: ['G08_FASTING_MEAL_TIMING', 'G05_BLOOD_PRESSURE'] };
