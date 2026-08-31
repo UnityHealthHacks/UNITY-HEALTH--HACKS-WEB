@@ -3,7 +3,7 @@
 
   function boot() {
     const engine = window.UHHGoalRouting;
-    if (!engine) return;
+    if (!engine || !engine.canonicalize) return;
 
     const text = (tag, value, className = '') => {
       const node = document.createElement(tag);
@@ -123,14 +123,29 @@
     });
   }
 
-  if (!window.UHHGoalRouting) return;
+  function failClosed() {
+    document.querySelectorAll('[data-goal-routing-form]').forEach((form) => {
+      form.addEventListener('submit', (event) => event.preventDefault());
+      form.querySelectorAll('button[type="submit"],input[type="submit"]').forEach((control) => {
+        control.disabled = true;
+        control.setAttribute('aria-disabled', 'true');
+      });
+      const status = form.querySelector('[data-routing-status]');
+      if (status) status.textContent = 'The UHH safety-routing layer did not load. No route was generated. Reload the page before trying again.';
+    });
+  }
+
+  if (!window.UHHGoalRouting) {
+    failClosed();
+    return;
+  }
   if (window.UHHGoalRouting.canonicalize) {
     boot();
     return;
   }
   const script = document.createElement('script');
-  script.src = 'assets/goal-routing-refinement.js?v=20260830-95-2';
-  script.onload = boot;
-  script.onerror = boot;
+  script.src = 'assets/goal-routing-refinement.js?v=20260830-95-4';
+  script.onload = () => window.UHHGoalRouting?.canonicalize ? boot() : failClosed();
+  script.onerror = failClosed;
   document.head.appendChild(script);
 })();
