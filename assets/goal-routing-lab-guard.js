@@ -7,7 +7,7 @@
     const question = document.getElementById('guardianQuestion');
     const answer = document.getElementById('guardianAnswer');
     const status = document.getElementById('guardianStatus');
-    if (!engine || !form || !question || !answer) return;
+    if (!engine || !engine.canonicalize || !form || !question || !answer) return;
 
     function renderGuard(result) {
       answer.replaceChildren();
@@ -48,14 +48,43 @@
     }, true);
   }
 
-  if (!window.UHHGoalRouting) return;
+  function failClosed() {
+    const form = document.getElementById('guardianForm');
+    const answer = document.getElementById('guardianAnswer');
+    const status = document.getElementById('guardianStatus');
+    if (form) {
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }, true);
+      form.querySelectorAll('button[type="submit"],input[type="submit"]').forEach((control) => {
+        control.disabled = true;
+        control.setAttribute('aria-disabled', 'true');
+      });
+    }
+    if (answer) {
+      answer.replaceChildren();
+      const notice = document.createElement('div');
+      notice.className = 'notice warning';
+      const strong = document.createElement('strong');
+      strong.textContent = 'Safety layer unavailable: ';
+      notice.append(strong, document.createTextNode('Guardian Lab did not load the required UHH safety-routing refinement. No Guardian response was generated. Reload the page before trying again.'));
+      answer.append(notice);
+    }
+    if (status) status.textContent = 'Guardian safety layer did not load. No response was generated.';
+  }
+
+  if (!window.UHHGoalRouting) {
+    failClosed();
+    return;
+  }
   if (window.UHHGoalRouting.canonicalize) {
     boot();
     return;
   }
   const script = document.createElement('script');
-  script.src = 'assets/goal-routing-refinement.js?v=20260830-95-2';
-  script.onload = boot;
-  script.onerror = boot;
+  script.src = 'assets/goal-routing-refinement.js?v=20260830-95-4';
+  script.onload = () => window.UHHGoalRouting?.canonicalize ? boot() : failClosed();
+  script.onerror = failClosed;
   document.head.appendChild(script);
 })();
