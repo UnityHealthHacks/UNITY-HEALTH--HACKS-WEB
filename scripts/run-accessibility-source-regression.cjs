@@ -23,6 +23,11 @@ function stripTags(value) {
   return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function isWrappedByLabel(text, index) {
+  const before = text.slice(0, index).toLowerCase();
+  return before.lastIndexOf('<label') > before.lastIndexOf('</label>');
+}
+
 for (const file of htmlFiles) {
   const text = fs.readFileSync(path.join(root, file), 'utf8');
 
@@ -68,8 +73,8 @@ for (const file of htmlFiles) {
     controls += 1;
     const id = (a.get('id') || '').trim();
     const named = (a.get('aria-label') || '').trim() || (a.get('aria-labelledby') || '').trim() || (a.get('title') || '').trim();
-    let labelled = false;
-    if (id) {
+    let labelled = isWrappedByLabel(text, inputMatch.index);
+    if (!labelled && id) {
       const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       labelled = new RegExp(`<label\\b[^>]*\\bfor\\s*=\\s*["']${escaped}["']`, 'i').test(text);
     }
