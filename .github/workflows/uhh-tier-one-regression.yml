@@ -48,6 +48,9 @@ jobs:
       - name: Local link and asset integrity
         run: node scripts/run-site-integrity-regression.cjs links
 
+      - name: Accessibility source semantics
+        run: node scripts/run-accessibility-source-regression.cjs
+
       - name: Release-boundary safety regression
         run: node scripts/run-release-boundary-regression.cjs
 
