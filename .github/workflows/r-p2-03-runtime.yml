@@ -1,0 +1,23 @@
+name: R-P2-03 Runtime Acceptance
+
+on:
+  push:
+    branches:
+      - test/r-p2-03-runtime-2026-09-01
+
+permissions:
+  contents: read
+
+jobs:
+  r-p2-03-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run R-P2-03 acceptance
+        run: node scripts/run-r-p2-03-acceptance.cjs
