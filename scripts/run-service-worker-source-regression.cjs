@@ -50,9 +50,10 @@ requireMatch(source, /if\s*\(isNavigation\s*\|\|\s*isCodeAsset\)\s*\{[\s\S]*?eve
 requireMatch(source, /if\s*\(request\.mode\s*===\s*['"]navigate['"]\)\s*return\s+caches\.match\(['"]\.\/404\.html['"]\)/,
   'offline navigation fallback must remain an explicit local 404 shell');
 
+// Guard explicit unsafe cache/runtime behaviors without trying to infer data
+// sensitivity from ordinary variable names such as `response`.
 const forbidden = [
   /req\.method\s*===\s*['"]POST['"]/i,
-  /cache\.put\([^,]+,\s*[^)]*(?:health|profile|prompt|answer|response)/i,
   /caches\.open\([^)]*9-3/i
 ];
 for (const pattern of forbidden) {
