@@ -48,6 +48,9 @@ jobs:
       - name: Local link and asset integrity
         run: node scripts/run-site-integrity-regression.cjs links
 
+      - name: Release-boundary safety regression
+        run: node scripts/run-release-boundary-regression.cjs
+
       - name: Verify 9.5 manifest identity
         shell: bash
         run: |
