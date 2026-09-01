@@ -42,8 +42,11 @@ jobs:
       - name: Learning Hub regression
         run: node scripts/run-learning-hub-regression.cjs
 
-      - name: Site integrity regression
-        run: node scripts/run-site-integrity-regression.cjs
+      - name: HTML metadata integrity
+        run: node scripts/run-site-integrity-regression.cjs metadata
+
+      - name: Local link and asset integrity
+        run: node scripts/run-site-integrity-regression.cjs links
 
       - name: Verify 9.5 manifest identity
         shell: bash
