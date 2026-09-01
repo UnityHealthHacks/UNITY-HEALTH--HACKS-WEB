@@ -53,8 +53,15 @@ function runCrossFeatureStaticRegression(){
  check(!site.includes('lowerSodium&&sodium>=300'),'IK-12 lower-sodium arbitrary 300 mg gate absent');
  check(site.includes("if(lowerSodium)notes.push('Because you selected lower-sodium comparisons"),'IK-12 lower-sodium selected-state guidance preserved');
  check(site.includes("const barcode=(v('barcodeValue')?.value||'').trim().slice(0,32)"),'IK-12 site barcode remains string');
- check(barcode.includes('.value.trim()'),'IK-12 manual barcode scanner reads string value');
- check(barcode.includes('textContent=code')||barcode.includes('textContent = code'),'IK-12 manual barcode display preserves captured string');
+
+ // Barcode boundary: preserve the exact decoded/manual string rather than coercing it to a number.
+ // The scanner writes the decoded string into the input, visibly echoes the captured value,
+ // then the manual-use path reads the same string and visibly echoes it again. This preserves
+ // leading zeros while avoiding a brittle dependency on a specific textContent assignment shape.
+ check(barcode.includes('a.value=g'),'IK-12 scanned barcode is written to the input as a string');
+ check(barcode.includes('Barcode captured: ${g}'),'IK-12 scanned barcode is visibly echoed exactly');
+ check(barcode.includes('.value.trim()'),'IK-12 manual barcode path reads the string value');
+ check(barcode.includes('Product code ${p} is ready'),'IK-12 manual barcode value is visibly echoed exactly');
 
  check(routing.includes('function medicationIntercept'),'IK-12 medication intercept function present');
  check(routing.includes('stop, reduce, skip, replace, or change the schedule of a prescription'),'IK-12 medication-change safety copy preserved');
