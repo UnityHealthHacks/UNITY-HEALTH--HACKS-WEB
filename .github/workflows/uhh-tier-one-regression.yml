@@ -99,6 +99,9 @@ jobs:
       - name: Release-boundary safety regression
         run: node scripts/run-release-boundary-regression.cjs
 
+      - name: Local Guardian privacy boundary
+        run: node scripts/run-local-privacy-boundary-regression.cjs
+
       - name: Verify 9.5 manifest identity
         shell: bash
         run: |
