@@ -49,7 +49,28 @@ jobs:
         run: node scripts/run-site-integrity-regression.cjs links
 
       - name: Accessibility source semantics
-        run: node scripts/run-accessibility-source-regression.cjs
+        id: accessibility
+        shell: bash
+        run: |
+          set +e
+          node scripts/run-accessibility-source-regression.cjs > accessibility-source-regression.txt 2>&1
+          code=$?
+          cat accessibility-source-regression.txt
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Preserve accessibility diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-source-regression-${{ github.sha }}
+          path: accessibility-source-regression.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Enforce accessibility result
+        if: steps.accessibility.outputs.exit_code != '0'
+        run: exit 1
 
       - name: Release-boundary safety regression
         run: node scripts/run-release-boundary-regression.cjs
