@@ -48,7 +48,7 @@ run('LH-R08', () => assert.match(html, /does not claim a universal exact human a
 run('LH-R09', () => assert.match(html, /Pet ownership by itself does not prove a human parasitic infection/i, 'Pet ownership parasite-evidence boundary missing'));
 run('LH-R10', () => assert.match(html, /Help Me Choose/i, 'Help Me Choose card missing'));
 run('LH-R11', () => assert.match(html, /free goal-first routing tools/i, 'Help Me Choose free boundary missing'));
-run('LH-R12', () => assert.match(html, /not forced into a paid path/i, 'No-forced-paid-path boundary missing'));
+run('LH-R12', () => assert.match(html, /without being forced into a paid path/i, 'No-forced-paid-path boundary missing'));
 run('LH-R13', () => assert.match(html, /UHH-WEBSITE-9\.5-DEVELOPMENT-2026-08-30/, '9.5 project metadata missing'));
 run('LH-R14', () => assert.match(html, /href="gut-health\.html"/, 'Gut education route missing'));
 run('LH-R15', () => assert.match(html, /href="digestive-conditions\.html"/, 'Digestive education route missing'));
