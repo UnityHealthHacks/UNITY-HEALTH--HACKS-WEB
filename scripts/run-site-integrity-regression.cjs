@@ -29,12 +29,20 @@ function localTarget(raw) {
   }
 }
 
+function hasViewportMeta(text) {
+  const metaTags = text.match(/<meta\b[^>]*>/gi) || [];
+  return metaTags.some((tag) =>
+    /\bname\s*=\s*["']viewport["']/i.test(tag) &&
+    /\bcontent\s*=\s*["'][^"']+["']/i.test(tag)
+  );
+}
+
 for (const file of htmlFiles) {
   const text = fs.readFileSync(path.join(root, file), 'utf8');
 
   if (mode === 'all' || mode === 'metadata') {
     if (!/<html\b[^>]*\blang=["'][^"']+["']/i.test(text)) fail(file, 'missing html lang attribute');
-    if (!/<meta\b[^>]*name=["']viewport["'][^>]*content=["'][^"']+["']/i.test(text)) fail(file, 'missing viewport meta');
+    if (!hasViewportMeta(text)) fail(file, 'missing viewport meta');
     if (!/<title>[^<]+<\/title>/i.test(text)) fail(file, 'missing non-empty title');
   }
 
