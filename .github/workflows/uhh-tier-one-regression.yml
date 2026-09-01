@@ -104,6 +104,9 @@ jobs:
       - name: Local Guardian privacy boundary
         run: node scripts/run-local-privacy-boundary-regression.cjs
 
+      - name: Service worker stale-cache source safeguards
+        run: node scripts/run-service-worker-source-regression.cjs
+
       - name: Verify 9.5 manifest identity
         shell: bash
         run: |
