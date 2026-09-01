@@ -54,7 +54,7 @@ function runCrossFeatureStaticRegression(){
  check(site.includes("if(lowerSodium)notes.push('Because you selected lower-sodium comparisons"),'IK-12 lower-sodium selected-state guidance preserved');
  check(site.includes("const barcode=(v('barcodeValue')?.value||'').trim().slice(0,32)"),'IK-12 site barcode remains string');
  check(barcode.includes('.value.trim()'),'IK-12 manual barcode scanner reads string value');
- check(barcode.includes('textContent=code')||barcode.includes('textContent = code'),'IK-12 manual barcode display preserves captured string');
+ check(barcode.includes('Barcode captured: ${')&&barcode.includes('Product code ${')&&barcode.includes('.value='),'IK-12 barcode captured/manual string is preserved into input and status copy');
 
  check(routing.includes('function medicationIntercept'),'IK-12 medication intercept function present');
  check(routing.includes('stop, reduce, skip, replace, or change the schedule of a prescription'),'IK-12 medication-change safety copy preserved');
