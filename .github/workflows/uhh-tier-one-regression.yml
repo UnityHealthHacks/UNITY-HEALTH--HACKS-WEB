@@ -35,6 +35,9 @@ jobs:
       - name: CI policy regression
         run: node scripts/run-ci-policy-regression.cjs
 
+      - name: External execution and submission boundaries
+        run: node scripts/run-external-execution-boundary-regression.cjs
+
       - name: Ingredient knowledge regression
         run: node scripts/run-ingredient-knowledge-regression.cjs
 
