@@ -49,7 +49,7 @@ for (const file of htmlFiles) {
   for (const match of source.matchAll(/<link\b[^>]*>/gis)) {
     const a = attrs(match[0]);
     const rel = (a.get('rel') || '').toLowerCase().split(/\s+/);
-    const externally-sensitiveRel = rel.some((value) =>
+    const externallySensitiveRel = rel.some((value) =>
       ['stylesheet', 'preload', 'modulepreload', 'prefetch', 'icon', 'manifest'].includes(value)
     );
     if (externallySensitiveRel) checkValue(file, 'link', 'href', a.get('href'));
