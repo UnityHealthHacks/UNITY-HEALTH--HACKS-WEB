@@ -44,6 +44,9 @@ jobs:
       - name: Inline execution and navigation boundaries
         run: node scripts/run-inline-execution-boundary-regression.cjs
 
+      - name: New-tab isolation boundary
+        run: node scripts/run-new-tab-isolation-regression.cjs
+
       - name: Dynamic code execution boundaries
         run: node scripts/run-dynamic-code-execution-boundary-regression.cjs
 
