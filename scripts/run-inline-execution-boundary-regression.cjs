@@ -9,6 +9,7 @@ const htmlFiles = fs.readdirSync(root)
   .sort();
 
 const failures = [];
+let reviewedPrintExceptionCount = 0;
 
 function push(file, message) {
   failures.push(`${file}: ${message}`);
@@ -17,9 +18,17 @@ function push(file, message) {
 for (const file of htmlFiles) {
   const source = fs.readFileSync(path.join(root, file), 'utf8');
 
-  // Inline event-handler attributes expand the executable surface and obstruct a strict CSP.
+  // Inline event handlers are forbidden except for the one reviewed print-only control below.
   const inlineHandlers = source.match(/\son[a-z][a-z0-9_-]*\s*=\s*["'][^"']*["']/gi) || [];
-  for (const match of inlineHandlers) push(file, `inline event handler is not allowed: ${match.trim()}`);
+  for (const match of inlineHandlers) {
+    const normalized = match.trim().replace(/\s+/g, ' ');
+    const reviewedPrintOnly = file === '30-day-plan.html' && /^onclick=["']window\.print\(\)["']$/i.test(normalized);
+    if (reviewedPrintOnly) {
+      reviewedPrintExceptionCount += 1;
+      continue;
+    }
+    push(file, `unreviewed inline event handler is not allowed: ${normalized}`);
+  }
 
   // Meta refresh can create client-side redirects outside ordinary navigation controls.
   const metaTags = source.match(/<meta\b[^>]*>/gi) || [];
@@ -34,6 +43,10 @@ for (const file of htmlFiles) {
   for (const tag of baseTags) push(file, `base element requires explicit architecture review: ${tag}`);
 }
 
+if (reviewedPrintExceptionCount !== 1) {
+  failures.push(`reviewed print-only exception count changed: expected 1, found ${reviewedPrintExceptionCount}`);
+}
+
 if (failures.length) {
   console.error('Inline execution/navigation boundary regression FAILED');
   for (const failure of failures) console.error(`- ${failure}`);
@@ -41,4 +54,4 @@ if (failures.length) {
 }
 
 console.log(`Inline execution/navigation boundary regression PASS (${htmlFiles.length} HTML files checked)`);
-console.log('Boundary: no inline event handlers, meta refresh redirects, or base elements in top-level HTML.');
+console.log('Boundary: no unreviewed inline event handlers, meta refresh redirects, or base elements in top-level HTML; exactly one reviewed print-only onclick exception is pinned to 30-day-plan.html.');
