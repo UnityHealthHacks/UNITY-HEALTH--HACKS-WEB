@@ -1,0 +1,32 @@
+# Local/runtime secrets and environment state
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+
+# Credential and secret files
+credentials.json
+service-account.json
+service_account.json
+secret.json
+secrets.json
+
+# Private keys / certificate stores
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Local databases and database exports
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql
+
+# Common local/editor noise
+.DS_Store
+Thumbs.db
