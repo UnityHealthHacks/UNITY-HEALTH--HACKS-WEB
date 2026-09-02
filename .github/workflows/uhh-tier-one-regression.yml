@@ -41,6 +41,9 @@ jobs:
       - name: Dynamic code execution boundaries
         run: node scripts/run-dynamic-code-execution-boundary-regression.cjs
 
+      - name: First-party network egress boundaries
+        run: node scripts/run-first-party-network-egress-regression.cjs
+
       - name: Ingredient knowledge regression
         run: node scripts/run-ingredient-knowledge-regression.cjs
 
