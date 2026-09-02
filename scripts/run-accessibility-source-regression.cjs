@@ -47,6 +47,24 @@ for (const file of htmlFiles) {
   }
   for (const id of duplicateIds) fail(file, `duplicate id: ${id}`);
 
+  const labelRe = /<label\b[^>]*>/gi;
+  let labelMatch;
+  while ((labelMatch = labelRe.exec(text))) {
+    const a = attrs(labelMatch[0]);
+    const target = (a.get('for') || '').trim();
+    if (target && !ids.has(target)) fail(file, `label for references missing id: ${target}`);
+  }
+
+  const ariaLabelledbyRe = /\baria-labelledby\s*=\s*(["'])(.*?)\1/gi;
+  let ariaMatch;
+  while ((ariaMatch = ariaLabelledbyRe.exec(text))) {
+    const refs = ariaMatch[2].trim().split(/\s+/).filter(Boolean);
+    if (refs.length === 0) fail(file, 'aria-labelledby is empty');
+    for (const ref of refs) {
+      if (!ids.has(ref)) fail(file, `aria-labelledby references missing id: ${ref}`);
+    }
+  }
+
   const imgRe = /<img\b[^>]*>/gi;
   let imgMatch;
   while ((imgMatch = imgRe.exec(text))) {
@@ -95,5 +113,5 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`UHH accessibility source regression PASS: ${htmlFiles.length} HTML files, ${images} images, ${controls} form/button controls checked.`);
+console.log(`UHH accessibility source regression PASS: ${htmlFiles.length} HTML files, ${images} images, ${controls} form/button controls checked, including label/id reference integrity.`);
 console.log('Scope: source-level semantics only; not assistive-technology, keyboard, visual-contrast, browser/device, hosted-runtime, or release proof.');
