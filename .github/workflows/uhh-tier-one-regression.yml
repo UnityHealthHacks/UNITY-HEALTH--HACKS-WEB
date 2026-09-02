@@ -44,6 +44,9 @@ jobs:
       - name: First-party network egress boundaries
         run: node scripts/run-first-party-network-egress-regression.cjs
 
+      - name: CSS external resource boundaries
+        run: node scripts/run-css-external-resource-boundary-regression.cjs
+
       - name: Vendored third-party integrity
         run: node scripts/run-vendored-third-party-integrity-regression.cjs
 
