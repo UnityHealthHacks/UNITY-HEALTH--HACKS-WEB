@@ -47,6 +47,9 @@ jobs:
       - name: Vendored third-party integrity
         run: node scripts/run-vendored-third-party-integrity-regression.cjs
 
+      - name: Sensitive artifact path boundary
+        run: node scripts/run-sensitive-artifact-path-regression.cjs
+
       - name: Ingredient knowledge regression
         run: node scripts/run-ingredient-knowledge-regression.cjs
 
