@@ -13,6 +13,7 @@ requireMatch(!/^\s*(contents|actions|checks|deployments|issues|packages|pull-req
 requireMatch(/timeout-minutes:\s*5\b/.test(text), 'source-regression job must retain the five-minute timeout');
 requireMatch(/persist-credentials:\s*false\b/.test(text), 'checkout must retain persist-credentials: false');
 requireMatch(/concurrency:[\s\S]*?cancel-in-progress:\s*true\b/.test(text), 'workflow must retain concurrency cancellation');
+requireMatch(/node-version:\s*['"]22\.23\.2['"]/.test(text), 'workflow must pin the verified Node.js runtime to exact version 22.23.2');
 
 const uses = [...text.matchAll(/^\s*uses:\s*([^\s#]+).*$/gm)].map((m) => m[1]);
 requireMatch(uses.length > 0, 'workflow must contain pinned GitHub Actions dependencies');
@@ -31,4 +32,4 @@ if (failures.length) {
 }
 
 console.log('CI policy regression PASSED');
-console.log(`Verified ${uses.length} immutable action dependency reference(s), read-only permissions, checkout credential non-persistence, timeout, concurrency cancellation, and self-enforcement.`);
+console.log(`Verified ${uses.length} immutable action dependency reference(s), exact Node.js runtime pin, read-only permissions, checkout credential non-persistence, timeout, concurrency cancellation, and self-enforcement.`);
