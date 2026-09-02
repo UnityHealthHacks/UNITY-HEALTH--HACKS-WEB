@@ -38,6 +38,9 @@ jobs:
       - name: External execution and submission boundaries
         run: node scripts/run-external-execution-boundary-regression.cjs
 
+      - name: Inline execution and navigation boundaries
+        run: node scripts/run-inline-execution-boundary-regression.cjs
+
       - name: Dynamic code execution boundaries
         run: node scripts/run-dynamic-code-execution-boundary-regression.cjs
 
