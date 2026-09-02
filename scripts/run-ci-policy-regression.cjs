@@ -10,6 +10,7 @@ const requireMatch = (condition, message) => {
 
 requireMatch(/^permissions:\s*\n\s+contents:\s*read\s*$/m.test(text), 'workflow must keep top-level contents: read permissions');
 requireMatch(!/^\s*(contents|actions|checks|deployments|issues|packages|pull-requests|repository-projects|security-events|statuses):\s*write\s*$/m.test(text), 'workflow must not grant write permissions');
+requireMatch(/runs-on:\s*ubuntu-24\.04\b/.test(text), 'source-regression job must pin the supported Ubuntu 24.04 runner label rather than ubuntu-latest');
 requireMatch(/timeout-minutes:\s*5\b/.test(text), 'source-regression job must retain the five-minute timeout');
 requireMatch(/persist-credentials:\s*false\b/.test(text), 'checkout must retain persist-credentials: false');
 requireMatch(/concurrency:[\s\S]*?cancel-in-progress:\s*true\b/.test(text), 'workflow must retain concurrency cancellation');
@@ -32,4 +33,4 @@ if (failures.length) {
 }
 
 console.log('CI policy regression PASSED');
-console.log(`Verified ${uses.length} immutable action dependency reference(s), exact Node.js runtime pin, read-only permissions, checkout credential non-persistence, timeout, concurrency cancellation, and self-enforcement.`);
+console.log(`Verified ${uses.length} immutable action dependency reference(s), fixed Ubuntu runner label, exact Node.js runtime pin, read-only permissions, checkout credential non-persistence, timeout, concurrency cancellation, and self-enforcement.`);
